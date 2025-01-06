@@ -13,8 +13,8 @@ export default function UserInfo() {
 
   useEffect(() => {
     const handleLogoutOnClose = async (event) => {
-      // Call signOut when the window is being closed
-      await signOut({callbackUrl: "/"});
+      // Call signOut with a redirect after logging out
+      await signOut({ callbackUrl: "/" }); 
     };
 
     window.addEventListener("beforeunload", handleLogoutOnClose);
@@ -45,13 +45,12 @@ export default function UserInfo() {
           className="mx-auto flex items-center justify-between p-3 lg:px-8"
         >
           <div>
-          <Image src={logo1} alt="Logo" className="rounded-xl w-[60px] sm:w-[65px] md:w-[70px] lg:w-[80px] " />
-
+            <Image src={logo1} alt="Logo" className="rounded-xl w-[60px] sm:w-[65px] md:w-[70px] lg:w-[80px]" />
           </div>
           {/* <TranslateButton /> */}
           <h1 className="font-bold text-2xl hidden sm:block text-rose-600 uppercase">Desu Provisions</h1>
           <button
-            onClick={() => signOut()}
+            onClick={() => signOut({ callbackUrl: "/" })} // Immediate sign out with redirection
             className="bg-rose-600 hover:bg-rose-500 text-white rounded font-bold px-6 py-2 "
           >
             Log Out
@@ -60,7 +59,7 @@ export default function UserInfo() {
       </header>
       <ShuffleHero />
       <footer>
-        <Footer/>
+        <Footer />
       </footer>
     </div>
   );
