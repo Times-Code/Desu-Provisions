@@ -22,13 +22,13 @@ export default function RecentTransactions() {
         <body>
           <h2>Transaction Details</h2>
           <p><strong>Transaction ID:</strong> ${transaction._id}</p>
-          <p><strong>Total Bill:</strong> $${transaction.totalBill.toFixed(2)}</p>
+          <p><strong>Total Bill:</strong> ₹ ${transaction.totalBill.toFixed(2)}</p>
           <p><strong>Date:</strong> ${new Date(transaction.createdAt).toLocaleString()}</p>
           <ul>
             ${transaction.items
               .map(
                 (item) =>
-                  `<li>${item.name} - Qty: ${item.quantity}, Subtotal: $${item.subtotal.toFixed(2)}</li>`
+                  `<li>${item.name} - Qty: ${item.quantity}, Subtotal: ₹ ${item.subtotal.toFixed(2)}</li>`
               )
               .join('')}
           </ul>
@@ -72,7 +72,7 @@ export default function RecentTransactions() {
                     <strong>Transaction ID:</strong> {transaction._id}
                   </p>
                   <p>
-                    <strong>Total Bill:</strong> $
+                    <strong>Total Bill:</strong> ₹ 
                     {transaction.totalBill.toFixed(2)}
                   </p>
                   <p>
@@ -82,7 +82,7 @@ export default function RecentTransactions() {
                   <ul>
                     {transaction.items.map((item, i) => (
                       <li key={i}>
-                        {item.name} - Qty: {item.quantity}, Subtotal: $
+                        {item.name} - Qty: {item.quantity}, Subtotal: ₹ 
                         {item.subtotal.toFixed(2)}
                       </li>
                     ))}

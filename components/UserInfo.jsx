@@ -14,7 +14,7 @@ export default function UserInfo() {
   useEffect(() => {
     const handleLogoutOnClose = async (event) => {
       // Call signOut when the window is being closed
-      await signOut();
+      await signOut({callbackUrl: "/"});
     };
 
     window.addEventListener("beforeunload", handleLogoutOnClose);

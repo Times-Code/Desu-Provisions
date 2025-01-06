@@ -54,13 +54,27 @@ export default function SearchBar() {
   };
 
   const addToCart = (product) => {
+    // Regular expression to match and remove all non-Telugu characters/words
+    const teluguName = product.name.replace(/[^\u0C00-\u0C7F\s]/g, '').trim(); // Unicode range for Telugu characters
+  
+    // Add the product with the filtered Telugu name to the cart
     setCart((prevCart) => [
       ...prevCart,
-      { ...product, quantity: 0, amount: product.price, subtotal: 0 },
+      {
+        ...product,
+        name: teluguName, // Use the filtered Telugu name
+        quantity: 0,
+        unit: "kg", // Default unit
+        amount: product.price,
+        subtotal: 0,
+      },
     ]);
+  
     setResults([]);
     setQuery("");
   };
+  
+  
 
   const handlePrint = async () => {
     try {
@@ -137,23 +151,23 @@ export default function SearchBar() {
                     (item, index) => `
                   <tr>
                     <td>${index + 1}</td>
-<td style="max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+<td style="max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size:13px;">
   ${item.name}
 </td>                    <td>${item.quantity}</td>
-                    <td>$${item.amount.toFixed(2)}</td>
-                    <td>$${item.subtotal.toFixed(2)}</td>
+                    <td>₹ ${item.amount.toFixed(2)}</td>
+                    <td>₹ ${item.subtotal.toFixed(2)}</td>
                   </tr>`
                   )
                   .join("")}
                 <tr class="total-row">
                   <td colspan="4" class="text-right">Subtotal</td>
-                  <td>$${subtotal.toFixed(2)}</td>
+                  <td>₹ ${subtotal.toFixed(2)}</td>
                 </tr>
                 ${
                   includeSgst
                     ? `<tr>
                     <td colspan="4" class="text-right">SGST (2.5%)</td>
-                    <td>$${sgstAmount.toFixed(2)}</td>
+                    <td>₹ ${sgstAmount.toFixed(2)}</td>
                   </tr>`
                     : ""
                 }
@@ -161,13 +175,13 @@ export default function SearchBar() {
                   includeCgst
                     ? `<tr>
                     <td colspan="4" class="text-right">CGST (2.5%)</td>
-                    <td>$${cgstAmount.toFixed(2)}</td>
+                    <td>₹ ${cgstAmount.toFixed(2)}</td>
                   </tr>`
                     : ""
                 }
                 <tr class="total-row">
                   <td colspan="4" class="text-right">Total</td>
-                  <td>$${total.toFixed(2)}</td>
+                  <td>₹ ${total.toFixed(2)}</td>
                 </tr>
               </tbody>
             </table>
@@ -184,18 +198,39 @@ export default function SearchBar() {
     }
   };
 
-  const handleQuantityChange = (index, value) => {
-    const updatedCart = cart.map((item, i) =>
-      i === index
-        ? {
-            ...item,
-            quantity: value,
-            subtotal: value * item.amount,
-          }
-        : item
-    );
-    setCart(updatedCart);
-  };
+  
+const handleQuantityChange = (index, value) => {
+  const updatedCart = cart.map((item, i) =>
+    i === index
+      ? {
+          ...item,
+          quantity: parseFloat(value) || 0,
+          subtotal:
+            (parseFloat(value) || 0) *
+            item.amount *
+            (item.unit === "grams" ? 0.001 : 1),
+        }
+      : item
+  );
+  setCart(updatedCart);
+};
+
+const handleUnitChange = (index, unit) => {
+  const updatedCart = cart.map((item, i) =>
+    i === index
+      ? {
+          ...item,
+          unit,
+          subtotal:
+            item.quantity *
+            item.amount *
+            (unit === "grams" ? 0.001 : 1),
+        }
+      : item
+  );
+  setCart(updatedCart);
+};
+
 
   const handleAmountChange = (index, value) => {
     const updatedCart = cart.map((item, i) =>
@@ -270,7 +305,7 @@ export default function SearchBar() {
                   onClick={() => addToCart(product)}
                   className="p-2 hover:bg-gray-100 cursor-pointer"
                 >
-                  {product.name} - ${product.price}
+                  {product.name} - ₹ {product.price}
                 </li>
               ))}
             </ul>
@@ -302,19 +337,19 @@ export default function SearchBar() {
                   scope="col"
                   className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                 >
-                  Qty
+                  Qty(kg)
                 </th>
                 <th
                   scope="col"
                   className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                 >
-                  Amount
+                  Amount(₹)
                 </th>
                 <th
                   scope="col"
                   className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                 >
-                  Subtotal
+                  Subtotal(₹)
                 </th>
               </tr>
             </thead>
@@ -328,18 +363,18 @@ export default function SearchBar() {
                     {item.name}
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <input
-                      type="text"
-                      value={item.quantity}
-                      onChange={(e) =>
-                        handleQuantityChange(
-                          index,
-                          parseFloat(e.target.value) || 0
-                        )
-                      }
-                      className="w-[60px] border rounded p-1 text-center"
-                    />
-                  </td>
+  <input
+  type="number"
+  step="0.01" // Allows decimal values like 2.5
+  value={item.quantity}
+  onChange={(e) =>
+    handleQuantityChange(index, parseFloat(e.target.value) || 0)
+  }
+  className="w-[60px] border rounded p-1 text-center"
+/>
+ 
+</td>
+
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     <div className="flex items-center">
                       <input
@@ -354,28 +389,28 @@ export default function SearchBar() {
                         }
                         className="w-[60px] border rounded p-1 text-center"
                       />
-                      <button
+                      {/* <button
                         className="ml-2 text-blue-500 hover:text-blue-700"
                         onClick={() => handleAmountChange(index, item.price)}
                       >
                         <Pencil className="h-4 w-4" />
-                      </button>
+                      </button> */}
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    ${item.subtotal.toFixed(2)}
+                  ₹ {item.subtotal.toFixed(2)}
                   </td>
                 </tr>
               ))}
               <tr className="font-semibold border-t">
                 <td colSpan="2" className="p-2 text-right">
-                  Total Quantity:
+                  Total Weight:
                 </td>
-                <td className="p-2 text-center">{totalQuantity}</td>
+                <td className="p-2 text-left">{totalQuantity} kgs</td>
                 <td colSpan="1" className="p-2 text-right">
                   Amount:
                 </td>
-                <td className="p-2">$ {subtotal}</td>
+                <td className="p-2">₹ {subtotal.toFixed(2)}</td>
               </tr>
             </tbody>
           </table>
@@ -402,7 +437,7 @@ export default function SearchBar() {
 
           <div className="mt-4 flex flex-col items-end">
             <p className="text-lg font-semibold">
-              Total: ${calculateTotal().toFixed(2)}
+              Total: ₹ {calculateTotal().toFixed(2)}
             </p>
             <div className="mt-2 flex gap-4">
               <button
