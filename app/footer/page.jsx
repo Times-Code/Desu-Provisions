@@ -7,6 +7,7 @@ const Footer = () => {
         Copyright © {new Date().getFullYear()}{' '}
         <a
           href="https://veracityinfotronics.in/"
+          target='_blank'
           className=" text-rose-600  text-lg hover:text-red-500 "
         >
           Veracityinfotronics
@@ -16,6 +17,7 @@ const Footer = () => {
         Developed by {" "}
         <a
           href="https://www.timescode.in/"
+          target='_black'
           className=" text-rose-600  text-lg hover:text-red-500 "
         >
           TimesCode

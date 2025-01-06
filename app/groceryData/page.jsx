@@ -138,7 +138,7 @@ export default function GroceryDataTable() {
                       {products.map((product) => (
                         <TableRow key={product._id}>
                           <TableCell>{product.name}</TableCell>
-                          <TableCell>${product.price.toFixed(2)}</TableCell>
+                          <TableCell>₹ {product.price.toFixed(2)}</TableCell>
                           <TableCell>{product.inStock ? 'Yes' : 'No'}</TableCell>
                           <TableCell>
                             <Button 
