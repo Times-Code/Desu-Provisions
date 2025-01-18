@@ -55,8 +55,8 @@ export default function SearchBar() {
 
   const addToCart = (product) => {
     // Regular expression to match and remove all non-Telugu characters/words
-    const teluguName = product.name.replace(/[^\u0C00-\u0C7F\s]/g, '').trim(); // Unicode range for Telugu characters
-  
+    const teluguName = product.name.replace(/[^\u0C00-\u0C7F\s]/g, "").trim(); // Unicode range for Telugu characters
+
     // Add the product with the filtered Telugu name to the cart
     setCart((prevCart) => [
       ...prevCart,
@@ -69,12 +69,10 @@ export default function SearchBar() {
         subtotal: 0,
       },
     ]);
-  
+
     setResults([]);
     setQuery("");
   };
-  
-  
 
   const handlePrint = async () => {
     try {
@@ -83,6 +81,7 @@ export default function SearchBar() {
       const sgstAmount = includeSgst ? (subtotal * 2.5) / 100 : 0;
       const cgstAmount = includeCgst ? (subtotal * 2.5) / 100 : 0;
       const total = subtotal + sgstAmount + cgstAmount;
+      const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
 
       // Submit cart data to the database (optional)
       const result = await submitCartToDatabase(cart, sgstAmount, cgstAmount);
@@ -159,6 +158,10 @@ export default function SearchBar() {
                   </tr>`
                   )
                   .join("")}
+                  <tr class="total-row">
+                  <td colspan="4" class="text-right">Total Quantity</td>
+                  <td>${totalQuantity.toFixed(2)} kg</td>
+                </tr>
                 <tr class="total-row">
                   <td colspan="4" class="text-right">Subtotal</td>
                   <td>₹ ${subtotal.toFixed(2)}</td>
@@ -198,39 +201,35 @@ export default function SearchBar() {
     }
   };
 
-  
-const handleQuantityChange = (index, value) => {
-  const updatedCart = cart.map((item, i) =>
-    i === index
-      ? {
-          ...item,
-          quantity: parseFloat(value) || 0,
-          subtotal:
-            (parseFloat(value) || 0) *
-            item.amount *
-            (item.unit === "grams" ? 0.001 : 1),
-        }
-      : item
-  );
-  setCart(updatedCart);
-};
+  const handleQuantityChange = (index, value) => {
+    const updatedCart = cart.map((item, i) =>
+      i === index
+        ? {
+            ...item,
+            quantity: parseFloat(value) || 0,
+            subtotal:
+              (parseFloat(value) || 0) *
+              item.amount *
+              (item.unit === "grams" ? 0.001 : 1),
+          }
+        : item
+    );
+    setCart(updatedCart);
+  };
 
-const handleUnitChange = (index, unit) => {
-  const updatedCart = cart.map((item, i) =>
-    i === index
-      ? {
-          ...item,
-          unit,
-          subtotal:
-            item.quantity *
-            item.amount *
-            (unit === "grams" ? 0.001 : 1),
-        }
-      : item
-  );
-  setCart(updatedCart);
-};
-
+  const handleUnitChange = (index, unit) => {
+    const updatedCart = cart.map((item, i) =>
+      i === index
+        ? {
+            ...item,
+            unit,
+            subtotal:
+              item.quantity * item.amount * (unit === "grams" ? 0.001 : 1),
+          }
+        : item
+    );
+    setCart(updatedCart);
+  };
 
   const handleAmountChange = (index, value) => {
     const updatedCart = cart.map((item, i) =>
@@ -363,17 +362,19 @@ const handleUnitChange = (index, unit) => {
                     {item.name}
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-  <input
-  type="number"
-  step="0.01" // Allows decimal values like 2.5
-  value={item.quantity}
-  onChange={(e) =>
-    handleQuantityChange(index, parseFloat(e.target.value) || 0)
-  }
-  className="w-[60px] border rounded p-1 text-center"
-/>
- 
-</td>
+                    <input
+                      type="number"
+                      step="0.01" // Allows decimal values like 2.5
+                      value={item.quantity}
+                      onChange={(e) =>
+                        handleQuantityChange(
+                          index,
+                          parseFloat(e.target.value) || 0
+                        )
+                      }
+                      className="w-[60px] border rounded p-1 text-center"
+                    />
+                  </td>
 
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     <div className="flex items-center">
@@ -398,7 +399,7 @@ const handleUnitChange = (index, unit) => {
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  ₹ {item.subtotal.toFixed(2)}
+                    ₹ {item.subtotal.toFixed(2)}
                   </td>
                 </tr>
               ))}
