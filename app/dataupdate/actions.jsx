@@ -320,3 +320,82 @@ export async function fetchRecentTransactions(limit = 15) {
     return [];
   }
 }
+
+export async function searchCustomerByPhone(phoneNumber) {
+  const db = await getMongoDb();
+  const submissionsCollection = db.collection("submissions");
+
+  try {
+    // Search for customer by phone number in the submissions collection
+    const customer = await submissionsCollection.findOne({ PhoneNumber: phoneNumber });
+
+    if (customer) {
+      return {
+        name: customer.name,
+        phone: customer.PhoneNumber,
+        email: customer.email,
+      };
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Error searching customer:", error);
+    return null;
+  }
+}
+
+export async function addCustomerToDatabase(customerData) {
+  const db = await getMongoDb();
+  const submissionsCollection = db.collection("submissions");
+
+  try {
+    // Check if customer already exists
+    const existingCustomer = await submissionsCollection.findOne({
+      PhoneNumber: customerData.PhoneNumber,
+    });
+
+    if (existingCustomer) {
+      return { success: false, error: "Customer with this phone number already exists" };
+    }
+
+    // Insert new customer
+    await submissionsCollection.insertOne({
+      ...customerData,
+      createdAt: new Date(),
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error adding customer:", error);
+    return { success: false, error: "Failed to add customer" };
+  }
+}
+
+export async function updateCustomerInDatabase(customerData) {
+  const db = await getMongoDb();
+  const submissionsCollection = db.collection("submissions");
+
+  try {
+    // Update existing customer information
+    const result = await submissionsCollection.updateOne(
+      { PhoneNumber: customerData.PhoneNumber },
+      {
+        $set: {
+          name: customerData.name,
+          ...(customerData.email && { email: customerData.email }),
+          updatedAt: new Date(),
+        },
+      }
+    );
+
+    if (result.matchedCount === 0) {
+      return { success: false, error: "Customer not found" };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating customer:", error);
+    return { success: false, error: "Failed to update customer" };
+  }
+}
+
