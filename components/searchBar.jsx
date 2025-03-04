@@ -1,84 +1,80 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 import {
   searchProducts,
   submitCartToDatabase,
   searchCustomerByPhone,
   addCustomerToDatabase,
   updateCustomerInDatabase,
-} from "../app/dataupdate/actions";
-import { Search, User, Phone, X } from "lucide-react";
+} from "../app/dataupdate/actions"
+import { Search, User, Phone, X } from "lucide-react"
 import logo1 from "../public/LogoPNG.png"
 
 export default function SearchBar() {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
-  const [cart, setCart] = useState([]);
-  const [sgst, setSgst] = useState(0);
-  const [cgst, setCgst] = useState(0);
-  const [includeSgst, setIncludeSgst] = useState(false);
-  const [includeCgst, setIncludeCgst] = useState(false);
-  const [customerPhone, setCustomerPhone] = useState("");
-  const [customerName, setCustomerName] = useState("");
-  const [customerExists, setCustomerExists] = useState(false);
-  const [location, setLocation] = useState("Main Branch"); // Default location
-  const [showCustomerModal, setShowCustomerModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [isVerifyingCustomer, setIsVerifyingCustomer] = useState(false);
+  const [query, setQuery] = useState("")
+  const [results, setResults] = useState([])
+  const [cart, setCart] = useState([])
+  const [sgst, setSgst] = useState(0)
+  const [cgst, setCgst] = useState(0)
+  const [includeSgst, setIncludeSgst] = useState(false)
+  const [includeCgst, setIncludeCgst] = useState(false)
+  const [customerPhone, setCustomerPhone] = useState("")
+  const [customerName, setCustomerName] = useState("")
+  const [customerExists, setCustomerExists] = useState(false)
+  const [location, setLocation] = useState("Main Branch") // Default location
+  const [showCustomerModal, setShowCustomerModal] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState(null)
+  const [isVerifyingCustomer, setIsVerifyingCustomer] = useState(false)
 
   useEffect(() => {
-    const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    setCart(savedCart);
-  }, []);
+    const savedCart = JSON.parse(localStorage.getItem("cart")) || []
+    setCart(savedCart)
+  }, [])
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+    localStorage.setItem("cart", JSON.stringify(cart))
+  }, [cart])
 
   const handleSearch = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (query.trim()) {
-      const results = await searchProducts(query);
-      const filteredResults = results.filter((product) =>
-        product.name.toLowerCase().startsWith(query.toLowerCase())
-      );
-      setResults(filteredResults);
+      const results = await searchProducts(query)
+      const filteredResults = results.filter((product) => product.name.toLowerCase().startsWith(query.toLowerCase()))
+      setResults(filteredResults)
     } else {
-      setResults([]);
+      setResults([])
     }
-  };
+  }
 
   const handleInputChange = async (e) => {
-    const value = e.target.value;
-    setQuery(value);
+    const value = e.target.value
+    setQuery(value)
 
     if (value.trim()) {
-      const results = await searchProducts(value);
-      const filteredResults = results.filter((product) =>
-        product.name.toLowerCase().startsWith(value.toLowerCase())
-      );
-      setResults(filteredResults);
+      const results = await searchProducts(value)
+      const filteredResults = results.filter((product) => product.name.toLowerCase().startsWith(value.toLowerCase()))
+      setResults(filteredResults)
     } else {
-      setResults([]);
+      setResults([])
     }
-  };
+  }
 
   const searchCustomer = async () => {
-    setIsVerifyingCustomer(true);
+    setIsVerifyingCustomer(true)
     if (customerPhone.trim()) {
-      const customer = await searchCustomerByPhone(customerPhone);
+      const customer = await searchCustomerByPhone(customerPhone)
       if (customer) {
-        setCustomerName(customer.name);
-        setCustomerExists(true);
+        setCustomerName(customer.name)
+        setCustomerExists(true)
       } else {
-        setCustomerName("");
-        setCustomerExists(false);
-        setShowCustomerModal(true); // Show modal to add new customer
+        setCustomerName("")
+        setCustomerExists(false)
+        setShowCustomerModal(true) // Show modal to add new customer
       }
     }
-    setIsVerifyingCustomer(false);
-  };
+    setIsVerifyingCustomer(false)
+  }
 
   const saveCustomer = async () => {
     if (customerPhone.trim() && customerName.trim()) {
@@ -86,43 +82,43 @@ export default function SearchBar() {
         const result = await updateCustomerInDatabase({
           name: customerName,
           PhoneNumber: customerPhone,
-        });
+        })
         if (result.success) {
-          alert("Customer updated successfully!");
+          alert("Customer updated successfully!")
         } else {
-          alert("Failed to update customer. Please try again.");
+          alert("Failed to update customer. Please try again.")
         }
       } else {
         const result = await addCustomerToDatabase({
           name: customerName,
           PhoneNumber: customerPhone,
-        });
+        })
         if (result.success) {
-          setCustomerExists(true);
-          setShowCustomerModal(false);
+          setCustomerExists(true)
+          setShowCustomerModal(false)
         } else {
-          alert("Failed to add customer. Please try again.");
+          alert("Failed to add customer. Please try again.")
         }
       }
     }
-  };
+  }
 
   const handleProductSelect = (product) => {
-    setSelectedProduct(product);
+    setSelectedProduct(product)
     if (!customerPhone) {
-      setShowCustomerModal(true);
+      setShowCustomerModal(true)
     } else {
-      addToCart(product);
+      addToCart(product)
     }
-    setResults([]);
-    setQuery("");
-  };
+    setResults([])
+    setQuery("")
+  }
 
   const addToCart = (product) => {
-    if (!product) return;
+    if (!product) return
 
     // Regular expression to match and remove all non-Telugu characters/words
-    const teluguName = product.name.replace(/[^\u0C00-\u0C7F\s]/g, "").trim(); // Unicode range for Telugu characters
+    const teluguName = product.name.replace(/[^\u0C00-\u0C7F\s]/g, "").trim() // Unicode range for Telugu characters
 
     // Add the product with the filtered Telugu name to the cart
     setCart((prevCart) => [
@@ -135,46 +131,40 @@ export default function SearchBar() {
         amount: product.price,
         subtotal: product.price, // Initial subtotal based on quantity 1
       },
-    ]);
+    ])
 
-    setShowCustomerModal(false);
-    setSelectedProduct(null);
-  };
+    setShowCustomerModal(false)
+    setSelectedProduct(null)
+  }
 
   const closeModal = () => {
-    setShowCustomerModal(false);
-    setSelectedProduct(null);
-  };
+    setShowCustomerModal(false)
+    setSelectedProduct(null)
+  }
 
   const handlePrint = async () => {
     try {
       // Calculate subtotal, SGST, CGST, and total
-      const subtotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
-      const sgstAmount = includeSgst ? (subtotal * 2.5) / 100 : 0;
-      const cgstAmount = includeCgst ? (subtotal * 2.5) / 100 : 0;
-      const total = subtotal + sgstAmount + cgstAmount;
-      const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const subtotal = cart.reduce((sum, item) => sum + item.subtotal, 0)
+      const sgstAmount = includeSgst ? (subtotal * 2.5) / 100 : 0
+      const cgstAmount = includeCgst ? (subtotal * 2.5) / 100 : 0
+      const total = subtotal + sgstAmount + cgstAmount
+      const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0)
 
       // Save customer if needed
       if (customerPhone && customerName && !customerExists) {
-        await saveCustomer();
+        await saveCustomer()
       }
 
       // Submit cart data to the database (optional)
-      const result = await submitCartToDatabase(
-        cart,
-        sgstAmount,
-        cgstAmount,
-        customerPhone || null
-      );
+      const result = await submitCartToDatabase(cart, sgstAmount, cgstAmount, customerPhone || null)
 
       if (result.success) {
-        console.log("Cart data submitted successfully. Transaction ID:", result.transactionId);
+        console.log("Cart data submitted successfully. Transaction ID:", result.transactionId)
       } else {
-        console.error("Failed to submit cart data:", result.error);
+        console.error("Failed to submit cart data:", result.error)
       }
 
-      // Prepare cart content for printing
       const cartContent = `
         <html>
           <head>
@@ -189,11 +179,7 @@ export default function SearchBar() {
               }
               .logo {
                 text-align: center;
-                margin-bottom: 10px;
-              }
-              .logo img {
-                max-width: 100px;
-                height: auto;
+                margin-bottom: 5px;
               }
               table {
                 width: 100%;
@@ -214,10 +200,7 @@ export default function SearchBar() {
                 text-align: right;
               }
               .customer-info {
-                margin: 10px 0;
                 padding: 5px;
-                border: 1px solid #ddd;
-                border-radius: 5px;
               }
               .footer {
                 margin-top: 20px;
@@ -226,20 +209,24 @@ export default function SearchBar() {
                 border-top: 1px dashed #ccc;
                 padding-top: 10px;
               }
+               .logo-style {
+        height: 70px;
+        width: 120px;
+        border-radius: 8px;
+      }
             </style>
           </head>
           <body>
             <div class="logo">
-              <img src="${logo1.src}" alt="Desu Provisions Logo" />
+              <img src="${logo1.src}" alt="Desu Provisions Logo"  class="logo-style"/>
             </div>
             <h2 style="text-align: center;">Desu Provisions</h2>
-            <p style="text-align: center;">Location: ${location}</p>
             ${includeSgst || includeCgst ? `<p style="text-align: center;">GSTIN - 37BCNPA9844A1ZM</p>` : ""}
             ${
               customerName && customerPhone
                 ? `<div class="customer-info">
-                    <p><strong>Customer:</strong> ${customerName}</p>
-                    <p><strong>Phone:</strong> ${customerPhone}</p>
+                    <p><strong>Customer Name:</strong> ${customerName}</p>
+                    <p><strong>Phone No:</strong> ${customerPhone}</p>
                    </div>`
                 : ""
             }
@@ -265,7 +252,7 @@ export default function SearchBar() {
                     <td>${item.quantity}</td>
                     <td>₹ ${item.amount.toFixed(2)}</td>
                     <td>₹ ${item.subtotal.toFixed(2)}</td>
-                  </tr>`
+                  </tr>`,
                   )
                   .join("")}
                   <tr class="total-row">
@@ -300,22 +287,22 @@ export default function SearchBar() {
             </table>
             <div class="footer">
               <p><strong>Desu Provisions</strong></p>
-              <p>123 Main Street, Hyderabad, Telangana</p>
+              <p>353, sri bapuji market complex, Ongole</p>
               <p>Phone: +91 9876543210</p>
               <p>Thank you for your business!</p>
             </div>
           </body>
         </html>
-      `;
+      `
 
-      const printWindow = window.open("", "", "width=800,height=600");
-      printWindow.document.write(cartContent);
-      printWindow.document.close();
-      printWindow.print();
+      const printWindow = window.open("", "", "width=800,height=600")
+      printWindow.document.write(cartContent)
+      printWindow.document.close()
+      printWindow.print()
     } catch (error) {
-      console.error("Error during print operation:", error);
+      console.error("Error during print operation:", error)
     }
-  };
+  }
 
   const handleQuantityChange = (index, value) => {
     const updatedCart = cart.map((item, i) =>
@@ -325,10 +312,10 @@ export default function SearchBar() {
             quantity: Number.parseFloat(value) || 0,
             subtotal: (Number.parseFloat(value) || 0) * item.amount * (item.unit === "grams" ? 0.001 : 1),
           }
-        : item
-    );
-    setCart(updatedCart);
-  };
+        : item,
+    )
+    setCart(updatedCart)
+  }
 
   const handleUnitChange = (index, unit) => {
     const updatedCart = cart.map((item, i) =>
@@ -338,10 +325,10 @@ export default function SearchBar() {
             unit,
             subtotal: item.quantity * item.amount * (unit === "grams" ? 0.001 : 1),
           }
-        : item
-    );
-    setCart(updatedCart);
-  };
+        : item,
+    )
+    setCart(updatedCart)
+  }
 
   const handleAmountChange = (index, value) => {
     const updatedCart = cart.map((item, i) =>
@@ -351,27 +338,30 @@ export default function SearchBar() {
             amount: value,
             subtotal: item.quantity * Number.parseFloat(value || 0),
           }
-        : item
-    );
-    setCart(updatedCart);
-  };
+        : item,
+    )
+    setCart(updatedCart)
+  }
 
   const calculateTotal = () => {
-    const subtotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
-    const sgstAmount = includeSgst ? (subtotal * 2.5) / 100 : 0;
-    const cgstAmount = includeCgst ? (subtotal * 2.5) / 100 : 0;
-    return subtotal + sgstAmount + cgstAmount;
-  };
+    const subtotal = cart.reduce((sum, item) => sum + item.subtotal, 0)
+    const sgstAmount = includeSgst ? (subtotal * 2.5) / 100 : 0
+    const cgstAmount = includeCgst ? (subtotal * 2.5) / 100 : 0
+    return subtotal + sgstAmount + cgstAmount
+  }
 
   const handleClearCart = () => {
-    const confirmClear = confirm("Are you sure you want to clear the cart?");
+    const confirmClear = confirm("Are you sure you want to clear the cart?")
     if (confirmClear) {
-      setCart([]);
-      localStorage.removeItem("cart");
+      setCart([])
+      setCustomerName("")
+      setCustomerPhone("")
+      setCustomerExists(false)
+      localStorage.removeItem("cart")
     }
-  };
-  const subtotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
-  const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+  }
+  const subtotal = cart.reduce((sum, item) => sum + item.subtotal, 0)
+  const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
     <div className="flex justify-between items-center flex-col xl:flex-row gap-8 xl:items-start">
@@ -404,8 +394,6 @@ export default function SearchBar() {
             </ul>
           )}
         </div>
-
-        {/* Customer details section - now only shown when cart has items */}
         {cart.length > 0 && (
           <div className="mt-6 w-full border p-4 rounded-md shadow-sm">
             <h3 className="text-lg font-medium mb-3">Customer Details</h3>
@@ -432,17 +420,6 @@ export default function SearchBar() {
                   placeholder="Customer Name"
                   className="flex-1 p-2 border border-gray-300 rounded-md"
                 />
-              </div>
-              <div className="flex items-center gap-2">
-                <select
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  className="flex-1 p-2 border border-gray-300 rounded-md"
-                >
-                  <option value="Main Branch">Main Branch</option>
-                  <option value="City Center">City Center</option>
-                  <option value="Suburb Store">Suburb Store</option>
-                </select>
               </div>
               {customerPhone && customerName && (
                 <button
@@ -583,7 +560,7 @@ export default function SearchBar() {
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     <input
                       type="number"
-                      step="0.01" // Allows decimal values like 2.5
+                      step="0.01" 
                       value={item.quantity}
                       onChange={(e) => handleQuantityChange(index, Number.parseFloat(e.target.value) || 0)}
                       className="w-[60px] border rounded p-1 text-center"
@@ -654,5 +631,6 @@ export default function SearchBar() {
         </div>
       )}
     </div>
-  );
+  )
 }
+
