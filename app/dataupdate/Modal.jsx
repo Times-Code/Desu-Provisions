@@ -147,7 +147,7 @@ export default function SubmissionButton() {
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
                   </div>
                 ) : (
-                  <div className='overflow-auto'>
+                  <div className='overflow-auto h-[600px] overflow-y-auto'>
                   <Table>
                     <TableHeader>
                       <TableRow>
