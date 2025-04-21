@@ -96,7 +96,7 @@ export default function SubmittedData() {
         </p>
       )}
       {submittedData.length > 0 && (
-        <div className="mt-4 h-[450px] overflow-y-auto">
+        <div className="mt-4">
           <h2 className="text-lg font-semibold text-gray-700">Submitted Data:</h2>
           <table className="w-full border-collapse border border-gray-200 mt-2 text-sm text-gray-700">
             <thead>

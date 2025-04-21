@@ -125,7 +125,7 @@ export default function SubmissionButton() {
       </Button>
 
       {isOpen && (
-        <div className="fixed inset-0 h-[600] overflow-y-auto z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="relative w-[100%] max-w-6xl mx-auto my-6">
             <div className="relative flex flex-col w-full bg-white border-0 rounded-lg shadow-lg outline-none focus:outline-none">
               <div className="flex items-start justify-between p-5 border-b border-solid rounded-t border-slate-200">
@@ -147,7 +147,7 @@ export default function SubmissionButton() {
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
                   </div>
                 ) : (
-                  <div className='overflow-auto h-[600px] overflow-y-auto'>
+                  <div className='overflow-auto h-[450px] overflow-y-auto'>
                   <Table>
                     <TableHeader>
                       <TableRow>
