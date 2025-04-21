@@ -81,7 +81,7 @@ const ShuffleHero = () => {
         </div>
       </section>
 
-      <div className=" flex flex-end items-end flex-wrap gap-10 justify-around">
+      <div className=" flex flex-end items-end mb-12 flex-wrap gap-10 justify-around">
       <AddGroceryList />
       <GroceryDataTable />
       <HomePageForm />
