@@ -16,9 +16,13 @@ export async function POST(req) {
     console.log("user: ", user);
     return NextResponse.json({ user });
   } catch (error) {
-    console.error("Error in userExists API:", error);
+    console.error("Error in userExists API detailed:", {
+      message: error.message,
+      stack: error.stack,
+      email: body?.email
+    });
     return NextResponse.json(
-      { message: "An error occurred while checking if user exists." },
+      { message: "An error occurred while checking if user exists.", error: error.message },
       { status: 500 }
     );
   }
