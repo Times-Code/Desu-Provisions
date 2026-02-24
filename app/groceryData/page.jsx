@@ -18,7 +18,7 @@ export default function GroceryDataTable() {
     if (isOpen) {
       fetchProductsData()
     }
-  }, [isOpen])
+  }, [isOpen]) // eslint-disable-next-line react-hooks/exhaustive-deps
 
   async function fetchProductsData() {
     setIsLoading(true)

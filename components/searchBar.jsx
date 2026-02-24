@@ -782,7 +782,7 @@ export default function SearchBar() {
                     <span className="text-5xl">🛒</span>
                   </div>
                   <h4 className="text-2xl font-black text-gray-800 mb-2">No Previous Visits</h4>
-                  <p className="text-gray-500 font-medium text-lg">This customer hasn't completed any transactions yet.</p>
+                  <p className="text-gray-500 font-medium text-lg">This customer hasn&apos;t completed any transactions yet.</p>
                 </div>
               )}
             </div>

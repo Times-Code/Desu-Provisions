@@ -18,7 +18,7 @@ export default function SubmissionButton() {
     if (isOpen) {
       fetchSubmissionsData()
     }
-  }, [isOpen])
+  }, [isOpen]) // eslint-disable-next-line react-hooks/exhaustive-deps
 
   async function fetchSubmissionsData() {
     setIsLoading(true)
