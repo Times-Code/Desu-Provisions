@@ -62,7 +62,7 @@
 
 //   return (
 //     <div className="max-w-[400px] w-[100vw]">
-       
+
 //       <div className="shadow-lg p-5 rounded-lg border-t-4 border-rose-300">
 //         <h1 className="text-xl font-bold my-4">Register</h1>
 
@@ -125,7 +125,7 @@ export default function RegisterForm() {
     }
 
     try {
-      const resUserExists = await fetch("api/userExists", {
+      const resUserExists = await fetch("/api/userExists", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -140,7 +140,7 @@ export default function RegisterForm() {
         return;
       }
 
-      const res = await fetch("api/register", {
+      const res = await fetch("/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
