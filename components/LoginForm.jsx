@@ -34,33 +34,38 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="w-[100%] max-w-[400px]">
-      <div className="shadow-lg  p-5 rounded-lg border-t-4 border-rose-500">
-        <h1 className="text-xl font-bold my-4">Login</h1>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+    <div className="w-[100%] mx-auto sm:min-w-[440px]">
+      <div className="bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-10 rounded-xl border-t-[6px] border-[#f43f5e]">
+        <h1 className="text-3xl font-black text-gray-900 mb-8">Login</h1>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <input
             onChange={(e) => setEmail(e.target.value)}
             type="text"
-            placeholder="Email"
-            className="p-2"
+            placeholder="Username or Email"
+            className="w-full px-5 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all text-base text-gray-800 font-medium placeholder-gray-400 bg-gray-50/50"
           />
           <input
             onChange={(e) => setPassword(e.target.value)}
             type="password"
             placeholder="Password"
-            className="p-2"
+            className="w-full px-5 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all text-base text-gray-800 font-medium placeholder-gray-400 bg-gray-50/50"
           />
-          <button className="bg-rose-500 text-white rounded-md font-bold cursor-pointer px-6 py-2">
+          <button className="w-full bg-[#f43f5e] hover:bg-rose-600 transition-colors duration-300 text-white rounded-lg font-bold text-lg cursor-pointer py-4 mt-3 shadow-md">
             Login
           </button>
+
           {error && (
-            <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">
+            <div className="bg-red-50 text-red-500 border border-red-200 text-sm py-3 px-4 rounded-lg mt-2 text-center font-medium">
               {error}
             </div>
           )}
-          <Link className="text-sm mt-3 text-right" href={"/register"}>
-            Don&apos;t have an account? <span className="underline">Register</span>
-          </Link>
+
+          <div className="text-base mt-5 text-center text-gray-600">
+            Don&apos;t have an account?{" "}
+            <Link className="text-gray-900 font-bold underline hover:text-[#f43f5e] transition-colors" href={"/register"}>
+              Register
+            </Link>
+          </div>
         </form>
       </div>
     </div>

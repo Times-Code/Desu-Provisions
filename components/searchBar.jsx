@@ -7,7 +7,8 @@ import {
   searchCustomerByPhone,
   updateCustomerInDatabase,
   fetchCustomerHistory,
-  suggestCustomers
+  suggestCustomers,
+  addCustomerToDatabase
 } from "../app/dataupdate/actions"
 import { Search, User, Phone, X } from "lucide-react"
 import logo1 from "../public/LogoPNG.png"
@@ -32,6 +33,7 @@ export default function SearchBar() {
   const [showHistoryModal, setShowHistoryModal] = useState(false)
   const [isLoadingHistory, setIsLoadingHistory] = useState(false)
   const [customerSuggestions, setCustomerSuggestions] = useState([])
+  const [showActionsMenu, setShowActionsMenu] = useState(false)
 
   const handleViewHistory = async () => {
     if (!customerPhone) return
@@ -601,18 +603,57 @@ export default function SearchBar() {
               <span className="text-3xl font-black text-[#e42529] tracking-tight">₹ {(calculateTotal() || 0).toFixed(2)}</span>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 pb-0">
-              <button onClick={handleClearCart} className="col-span-2 py-2 bg-white border border-gray-300 text-gray-600 rounded-xl font-bold hover:bg-gray-100 hover:text-[#e42529] transition-all flex justify-center items-center gap-2 shadow-sm uppercase tracking-wide text-xs">
-                <X className="h-4 w-4" /> Clear Entire Bill
+            <div className="relative">
+              <button
+                onClick={() => setShowActionsMenu(!showActionsMenu)}
+                className="w-full py-3 bg-slate-800 text-white rounded-xl font-black hover:bg-slate-900 transition-all shadow-md active:scale-95 text-sm uppercase tracking-wide flex justify-center items-center gap-2"
+              >
+                <span>Actions Options</span>
+                <svg className={`w-4 h-4 transition-transform ${showActionsMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
               </button>
-              <button onClick={() => handlePrint('english')} disabled={cart.length === 0} className="py-2.5 bg-slate-800 text-white rounded-xl font-black hover:bg-slate-900 transition-all shadow-md active:scale-95 text-xs whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wide flex flex-col justify-center items-center gap-0.5">
-                <span>Print Bill</span>
-                <span className="text-[9px] text-gray-400 font-semibold">(English)</span>
-              </button>
-              <button onClick={() => handlePrint('telugu')} disabled={cart.length === 0} className="py-2.5 bg-[#e42529] text-white rounded-xl font-black hover:bg-rose-700 transition-all shadow-md active:scale-95 text-xs whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wide flex flex-col justify-center items-center gap-0.5">
-                <span>Print Bill</span>
-                <span className="text-[9px] text-rose-200 font-semibold">(Telugu)</span>
-              </button>
+
+              {/* Upwards Dropdown Menu */}
+              {showActionsMenu && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40 bg-transparent"
+                    onClick={() => setShowActionsMenu(false)}
+                  ></div>
+                  <div className="absolute bottom-full left-0 right-0 mb-2 z-50 bg-white border border-gray-200 rounded-xl shadow-[0_-5px_20px_rgba(0,0,0,0.15)] overflow-hidden flex flex-col animate-in fade-in slide-in-from-bottom-2 duration-200">
+                    <button
+                      onClick={() => {
+                        handleClearCart();
+                        setShowActionsMenu(false);
+                      }}
+                      className="w-full px-4 py-3.5 text-left border-b border-gray-100 text-gray-700 font-bold hover:bg-gray-50 hover:text-[#e42529] transition-all flex items-center gap-3 text-sm uppercase tracking-wide group"
+                    >
+                      <X className="h-4 w-4 group-hover:scale-110 transition-transform" /> Clear Entire Bill
+                    </button>
+                    <button
+                      onClick={() => {
+                        handlePrint('english');
+                        setShowActionsMenu(false);
+                      }}
+                      disabled={cart.length === 0}
+                      className="w-full px-4 py-3.5 text-left border-b border-gray-100 font-bold hover:bg-blue-50 transition-all flex items-center gap-3 text-sm uppercase tracking-wide disabled:opacity-50 disabled:cursor-not-allowed group text-slate-800"
+                    >
+                      <div className="bg-slate-800 text-white w-6 h-6 flex items-center justify-center rounded text-[10px] group-hover:bg-blue-600 transition-colors">EN</div>
+                      Print Bill <span className="text-gray-400 capitalize text-xs ml-auto">(English)</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        handlePrint('telugu');
+                        setShowActionsMenu(false);
+                      }}
+                      disabled={cart.length === 0}
+                      className="w-full px-4 py-3.5 text-left font-bold hover:bg-rose-50 transition-all flex items-center gap-3 text-sm uppercase tracking-wide disabled:opacity-50 disabled:cursor-not-allowed group text-[#e42529]"
+                    >
+                      <div className="bg-[#e42529] text-white w-6 h-6 flex items-center justify-center rounded text-[10px] group-hover:bg-rose-600 transition-colors">TE</div>
+                      Print Bill <span className="text-gray-400 capitalize text-xs ml-auto">(Telugu)</span>
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

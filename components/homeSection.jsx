@@ -19,6 +19,7 @@ const ShuffleHero = () => {
     date: "",
     day: "",
   });
+  const [showActionsMenu, setShowActionsMenu] = useState(false);
 
   useEffect(() => {
     const updateGreetingAndTime = () => {
@@ -73,18 +74,40 @@ const ShuffleHero = () => {
           </div>
         </section>
 
-        <div className="fixed bottom-[80px] left-0 w-full px-8 md:px-10 z-[100] pointer-events-none">
-          <div className="max-w-[1400px] mx-auto pointer-events-auto bg-white p-6 rounded-t-2xl border-t border-x border-rose-200 shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.2)] transform-none">
-            <div className="flex flex-wrap gap-8 justify-around items-center">
-              <AddGroceryList />
-              <GroceryDataTable />
-              <HomePageForm />
-              <SubmissionModal />
-              <RecentTransactions />
-              <button className="bg-slate-700 hover:bg-slate-800 text-white py-2 px-6 rounded-md font-semibold shadow-sm transition-all active:scale-95">
-                Inventory Summary
-              </button>
-            </div>
+        {/* Admin Actions Dropdown Container */}
+        <div className="fixed bottom-6 left-6 z-[150]">
+          <div className="relative">
+            {showActionsMenu && (
+              <>
+                <div
+                  className="fixed inset-0 z-40 bg-transparent"
+                  onClick={() => setShowActionsMenu(false)}
+                ></div>
+                <div className="absolute bottom-full left-0 mb-3 z-50 bg-white border border-gray-200 rounded-xl shadow-[0_-5px_25px_rgba(0,0,0,0.15)] overflow-hidden flex flex-col w-[260px] animate-in fade-in slide-in-from-bottom-2 duration-200">
+                  <div className="p-3 bg-gray-50 border-b border-gray-100 font-black text-gray-500 uppercase tracking-widest text-xs flex justify-between items-center">
+                    Dashboard Hub
+                  </div>
+                  <div className="flex flex-col p-1.5 space-y-0.5 [&_button]:!bg-transparent [&_button]:!text-gray-700 [&_button]:w-full [&_button]:text-left [&_button]:px-4 [&_button]:py-3 [&_button]:!shadow-none [&_button]:hover:!bg-rose-50 [&_button]:hover:!text-[#e42529] [&_button]:transition-all [&_button]:font-bold [&_button]:text-sm [&_button]:rounded-lg">
+                    <AddGroceryList />
+                    <GroceryDataTable />
+                    <HomePageForm />
+                    <SubmissionModal />
+                    <RecentTransactions />
+                    <button>
+                      Inventory Summary
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            <button
+              onClick={() => setShowActionsMenu(!showActionsMenu)}
+              className="py-3.5 px-6 bg-slate-800 text-white rounded-full font-black hover:bg-slate-900 transition-all shadow-[0_5px_15px_rgba(15,23,42,0.3)] active:scale-95 text-sm uppercase tracking-wide flex justify-center items-center gap-3"
+            >
+              <span>Admin Actions</span>
+              <svg className={`w-4 h-4 transition-transform ${showActionsMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 15l7-7 7 7"></path></svg>
+            </button>
           </div>
         </div>
       </div>

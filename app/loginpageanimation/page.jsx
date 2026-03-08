@@ -67,11 +67,12 @@ const generateSquares = () => {
       key={sq.id}
       layout
       transition={{ duration: 1.5, type: "spring" }}
-      className="w-full h-full"
+      className="w-full h-full shadow-sm"
       style={{
         backgroundImage: `url(${sq.src})`,
         backgroundSize: "cover",
-        borderRadius: "4px",
+        backgroundPosition: "center",
+        borderRadius: "8px",
       }}
     ></motion.div>
   ));
@@ -94,7 +95,7 @@ const ShuffleGrid = () => {
   };
 
   return (
-    <div className="grid grid-cols-3 grid-rows-2 lg:h-[350px] lg:w-[450px] h-[300px] w-[300px] gap-1">
+    <div className="grid grid-cols-3 grid-rows-2 lg:h-[320px] lg:w-[480px] h-[240px] w-[360px] gap-2 p-1">
       {squares.map((sq) => sq)}
     </div>
   );
