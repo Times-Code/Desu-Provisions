@@ -400,7 +400,7 @@ export default function SearchBar() {
   const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
-    <div className="flex flex-col lg:flex-row gap-4 w-full h-auto lg:h-[calc(100vh-270px)] mt-2">
+    <div className="flex flex-col lg:flex-row gap-4 w-full h-auto lg:h-[calc(100%)] mt-2">
 
       {/* LEFT COLUMN: Product Search & Cart Table (approx 70%) */}
       <div className="flex-1 flex flex-col h-full bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden relative z-10">
